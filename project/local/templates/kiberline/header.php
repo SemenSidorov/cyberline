@@ -5,8 +5,12 @@ IncludeTemplateLangFile(__FILE__);
 <!DOCTYPE html>
 <html>
 <head>
+	<meta name="author" content="Интернет-маркетинговое агентство BREVIS | www.brevis-site.ru" />
 	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 	<meta name="viewport" content="width=device-width, initial-scale=1, user-scalable=no">
+
+
+	<meta name="yandex-verification" content="131cc8fd679c2fe3" />
 
   <?$APPLICATION->ShowHead();?>
 
@@ -25,6 +29,7 @@ IncludeTemplateLangFile(__FILE__);
   <?$APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH.'/js/common.js');?>
   <?$APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH.'/js/jquery-ui.min.js');?>
   <?$APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH.'/js/jquery.fancybox.min.js');?>
+  <?$APPLICATION->AddHeadScript(SITE_TEMPLATE_PATH.'/js/jquery.maskedinput.min.js');?>
 
 	<?
 	$GLOBALS['USER'];
@@ -73,13 +78,13 @@ IncludeTemplateLangFile(__FILE__);
 					г. Тула, <span>ул. пр-т Ленина, д. 77</span>
 				</div>
 				<div class="adress">
-					Пн-Сб с 9.00 до 18.00<br>
+					Пн-Сб с 10.00 до 19.00<br>
 					Вс с 10.00 до 17.00
 				</div>
 			</div>
 			<div class="links">
-				<a class="button-user-login"></a>
-				<a href="/favorites/">
+				<a class="button-user-login" <?=$USER->IsAuthorized() ? 'href="/personal/"' : ''?>></a>
+				<a class="favorites-header" href="/favorites/">
 					<?
 					global $USER;
 
@@ -93,7 +98,7 @@ IncludeTemplateLangFile(__FILE__);
 					?>
 					<span><?=$count_favorites?></span>
 				</a>
-				<a href="/personal/basket.php">
+				<a class="cart-header" href="/personal/basket.php">
 					<?
 					CModule::IncludeModule('sale');
 					$data = CSaleBasket::GetList([], ["FUSER_ID" => CSaleBasket::GetBasketUserID(), "ORDER_ID" => false], false, false, []);
@@ -105,11 +110,11 @@ IncludeTemplateLangFile(__FILE__);
 					<span><?=$count_basket?></span>
 				</a>
 			</div>
-			<div class="social">
+			<!-- <div class="social">
 				<a href="#"></a>
 				<a href="#"></a>
 				<a href="#"></a>
-			</div>
+			</div> -->
 			<a class="search-link"></a>
 		</div>
 	</header>
@@ -153,3 +158,6 @@ IncludeTemplateLangFile(__FILE__);
 		);?>
   <?}?>
 	<div class="wrap">
+		<?if(strpos($APPLICATION->GetCurPage(), '/catalog/') === false && $APPLICATION->GetCurPage() != '/'){?>
+		<div class="block-name"><?=$APPLICATION->ShowTitle()?></div>
+		<?}?>

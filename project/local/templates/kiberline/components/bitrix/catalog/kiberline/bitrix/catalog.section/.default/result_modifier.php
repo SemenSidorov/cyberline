@@ -13,6 +13,12 @@ if($USER->IsAuthorized()){
   $data = json_decode($_COOKIE["UF_FAVORITES"]);
 }
 
+foreach ($arResult["ITEMS"] as $key => $item) {
+	$el = CIBlockElement::GetByID($item["ID"]);
+	$el = $el->GetNext();
+	$arResult["ITEMS"][$key]["DETAIL_PAGE_URL"] = $el["DETAIL_PAGE_URL"];
+}
+
 ?>
 
 <script>

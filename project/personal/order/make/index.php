@@ -83,8 +83,8 @@ $APPLICATION->SetTitle("");?>
 		"SHOW_NEAREST_PICKUP" => "N",
 		"SHOW_NOT_CALCULATED_DELIVERIES" => "L",
 		"SHOW_ORDER_BUTTON" => "final_step",
-		"SHOW_PAY_SYSTEM_INFO_NAME" => "N",
-		"SHOW_PAY_SYSTEM_LIST_NAMES" => "N",
+		"SHOW_PAY_SYSTEM_INFO_NAME" => "Y",
+		"SHOW_PAY_SYSTEM_LIST_NAMES" => "Y",
 		"SHOW_PICKUP_MAP" => "N",
 		"SHOW_STORES_IMAGES" => "N",
 		"SHOW_TOTAL_ORDER_BUTTON" => "N",
@@ -107,7 +107,11 @@ $APPLICATION->SetTitle("");?>
 		"USE_YM_GOALS" => "N",
 		"COMPONENT_TEMPLATE" => "new",
 		"PROPS_FADE_LIST_1" => array(
-		)
+			0 => "1",
+			1 => "3",
+			2 => "4",
+			3 => "5",
+		),
 	),
 	false
 );?>

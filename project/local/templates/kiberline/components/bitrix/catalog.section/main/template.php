@@ -4,7 +4,7 @@
 	Каталог товаров
 </div>
 <div class="index-catalog2">
-	<nav class="menu">
+	<!--nav class="menu">
 		<ul>
 			<li><a href="#"><img src="<?=SITE_TEMPLATE_PATH?>/img/tab1.png"> Хиты продаж</a></li>
 			<li><a href="#"><img src="<?=SITE_TEMPLATE_PATH?>/img/tab2.png"> Товары по акции</a></li>
@@ -15,7 +15,7 @@
 			<option>Товары по акции</option>
 			<option>Новинки</option>
 		</select>
-	</nav>
+	</nav-->
 	<div class="flex list">
     <?foreach ($arResult["ITEMS"] as $item) {?>
   		<div class="item">

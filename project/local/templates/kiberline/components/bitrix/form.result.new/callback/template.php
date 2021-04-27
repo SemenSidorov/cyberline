@@ -61,7 +61,8 @@ if ($arResult["isFormTitle"])
 			}elseif(strpos($arQuestion["HTML_CODE"], '<textarea ') !== false){
 				echo str_replace('<textarea ', '<textarea placeholder="'. $arQuestion["CAPTION"] . $required . '" ', $arQuestion["HTML_CODE"]);
 			}elseif(strpos($arQuestion["HTML_CODE"], 'type="checkbox"') !== false){
-				$bottom_fields .= str_replace('<input ', '<input class="checkbox-consent" style="display: none;" ', str_replace("Y", '', preg_replace('/id="(.*)"/', 'id="check' . $FIELD_SID . '"', $arQuestion["HTML_CODE"])));
+				// $bottom_fields .= str_replace('<input ', '<input class="checkbox-consent" style="display: none;" ', str_replace("Y", '', preg_replace('/id="(.*)"/', 'id="check' . $FIELD_SID . '"', $arQuestion["HTML_CODE"])));
+				$bottom_fields .= str_replace('<input ', '<input class="checkbox-consent" style="display: none;" ', preg_replace('/<label(.*)label>/', '', $arQuestion["HTML_CODE"]));
 				$bottom_fields .= '<label class="label-consent" for="check' . $FIELD_SID . '">' . $arQuestion["CAPTION"] . '</label>';
 			}else{
 				echo $arQuestion["HTML_CODE"] . " " . $arQuestion["CAPTION"];

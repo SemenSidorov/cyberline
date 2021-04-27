@@ -38,7 +38,12 @@ if (count($arResult["ERRORS"]) > 0):
 
 	unset($arResult["ERRORS"]["LOGIN"]);
 
-	ShowError(implode("<br />", $arResult["ERRORS"]));
+	if(!$_POST["ajax"]) {
+		ShowError(implode("<br />", $arResult["ERRORS"]));
+	}else{
+		echo json_encode($arResult["ERRORS"]);
+		die;
+	}
 
 elseif($arResult["USE_EMAIL_CONFIRMATION"] === "Y"):
 ?>
@@ -47,7 +52,7 @@ elseif($arResult["USE_EMAIL_CONFIRMATION"] === "Y"):
 
 <?if($arResult["SHOW_SMS_FIELD"] == true):?>
 
-<form method="post" action="<?=POST_FORM_ACTION_URI?>" name="regform">
+<form id="headerRegister" method="post" action="<?=POST_FORM_ACTION_URI?>" name="regform">
 <?
 if($arResult["BACKURL"] <> ''):
 ?>
@@ -59,6 +64,7 @@ endif;
 		<?echo GetMessage("main_register_sms")?><span class="starrequired">*</span>
 		<input size="30" type="text" name="SMS_CODE" value="<?=htmlspecialcharsbx($arResult["SMS_CODE"])?>" autocomplete="off" />
 	<input type="submit" name="code_submit_button" value="<?echo GetMessage("main_register_sms_send")?>" />
+	<?/*<input type="hidden" name="ajax_key" value="<?= md5('ajax_'.LICENSE_KEY)?>" />*/?>
 </form>
 
 <script>
@@ -91,7 +97,7 @@ new BX.PhoneAuth({
 
 <?else:?>
 
-<form method="post" action="<?=POST_FORM_ACTION_URI?>" name="regform" enctype="multipart/form-data">
+<form id="headerRegister" method="post" action="<?=POST_FORM_ACTION_URI?>" name="regform" enctype="multipart/form-data">
 <?
 if($arResult["BACKURL"] <> ''):
 ?>
@@ -219,6 +225,7 @@ if ($arResult["USE_CAPTCHA"] == "Y")
 	<br>
 		<br>
 	<input type="submit" name="register_submit_button" value="<?=GetMessage("AUTH_REGISTER")?>" />
+	<!-- <input type="hidden" name="ajax_key" value="<?= md5('ajax_'.LICENSE_KEY)?>" /> -->
 </form>
 
 <?endif //$arResult["SHOW_SMS_FIELD"] == true ?>

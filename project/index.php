@@ -1,6 +1,8 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Мебельная компания");
+$APPLICATION->SetPageProperty("description", "CyberLine - магазин цифровой и электронной техники");
+$APPLICATION->SetPageProperty("keywords", "CyberLine - магазин цифровой и электронной техники");
+$APPLICATION->SetTitle("CyberLine - магазин цифровой и электронной техники");
 ?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:news.list",
@@ -66,6 +68,7 @@ $APPLICATION->IncludeComponent(
 	"bitrix:catalog.section.list",
 	"main",
 	Array(
+		"CUSTOM_SECTION_SORT" => array("UF_SHOW_IN_MAIN" => "DESC"),
 		"ADD_SECTIONS_CHAIN" => "N",
 		"CACHE_FILTER" => "N",
 		"CACHE_GROUPS" => "Y",
@@ -88,9 +91,12 @@ $APPLICATION->IncludeComponent(
 	)
 );
 unset($GLOBALS["arrFilter"]);?>
+<?
+$GLOBALS["arrFilter"] = ["!PREVIEW_PICTURE" => false];
+?>
 <?$APPLICATION->IncludeComponent(
-	"bitrix:catalog.section", 
-	"main", 
+	"bitrix:catalog.section",
+	"main",
 	array(
 		"ACTION_VARIABLE" => "action",
 		"ADD_PROPERTIES_TO_BASKET" => "Y",
@@ -196,6 +202,9 @@ unset($GLOBALS["arrFilter"]);?>
 	),
 	false
 );?>
+<?
+unset($GLOBALS["arrFilter"]);
+?>
 <?$APPLICATION->IncludeComponent(
 	"bitrix:news.list",
 	"main_brands",
@@ -311,9 +320,9 @@ unset($GLOBALS["arrFilter"]);?>
 	)
 );?>
 <?$APPLICATION->IncludeComponent(
-	"bitrix:news.list",
-	"main_news",
-	Array(
+	"bitrix:news.list", 
+	"main_news", 
+	array(
 		"ACTIVE_DATE_FORMAT" => "d.m.Y",
 		"ADD_SECTIONS_CHAIN" => "N",
 		"AJAX_MODE" => "N",
@@ -333,7 +342,36 @@ unset($GLOBALS["arrFilter"]);?>
 		"DISPLAY_PICTURE" => "Y",
 		"DISPLAY_PREVIEW_TEXT" => "Y",
 		"DISPLAY_TOP_PAGER" => "N",
-		"FIELD_CODE" => array("",""),
+		"FIELD_CODE" => array(
+			0 => "ID",
+			1 => "CODE",
+			2 => "XML_ID",
+			3 => "NAME",
+			4 => "TAGS",
+			5 => "SORT",
+			6 => "PREVIEW_TEXT",
+			7 => "PREVIEW_PICTURE",
+			8 => "DETAIL_TEXT",
+			9 => "DETAIL_PICTURE",
+			10 => "DATE_ACTIVE_FROM",
+			11 => "ACTIVE_FROM",
+			12 => "DATE_ACTIVE_TO",
+			13 => "ACTIVE_TO",
+			14 => "SHOW_COUNTER",
+			15 => "SHOW_COUNTER_START",
+			16 => "IBLOCK_TYPE_ID",
+			17 => "IBLOCK_ID",
+			18 => "IBLOCK_CODE",
+			19 => "IBLOCK_NAME",
+			20 => "IBLOCK_EXTERNAL_ID",
+			21 => "DATE_CREATE",
+			22 => "CREATED_BY",
+			23 => "CREATED_USER_NAME",
+			24 => "TIMESTAMP_X",
+			25 => "MODIFIED_BY",
+			26 => "USER_NAME",
+			27 => "",
+		),
 		"FILTER_NAME" => "",
 		"HIDE_LINK_WHEN_NO_DETAIL" => "N",
 		"IBLOCK_ID" => "9",
@@ -352,7 +390,10 @@ unset($GLOBALS["arrFilter"]);?>
 		"PARENT_SECTION" => "",
 		"PARENT_SECTION_CODE" => "",
 		"PREVIEW_TRUNCATE_LEN" => "",
-		"PROPERTY_CODE" => array("","",""),
+		"PROPERTY_CODE" => array(
+			0 => "",
+			1 => "",
+		),
 		"SET_BROWSER_TITLE" => "N",
 		"SET_LAST_MODIFIED" => "N",
 		"SET_META_DESCRIPTION" => "N",
@@ -364,7 +405,9 @@ unset($GLOBALS["arrFilter"]);?>
 		"SORT_BY2" => "SORT",
 		"SORT_ORDER1" => "DESC",
 		"SORT_ORDER2" => "ASC",
-		"STRICT_SECTION_CHECK" => "N"
-	)
+		"STRICT_SECTION_CHECK" => "N",
+		"COMPONENT_TEMPLATE" => "main_news"
+	),
+	false
 );?>
 <?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>

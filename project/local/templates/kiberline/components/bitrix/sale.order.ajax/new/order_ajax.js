@@ -71,6 +71,7 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 			this.isHttps = window.location.protocol === "https:";
 			this.orderSaveAllowed = false;
 			this.socServiceHiddenNode = false;
+			this.once = false;
 		},
 
 		/**
@@ -1156,7 +1157,7 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 		},
 
 		showDeliveryItemsPage: function(page)
-		{
+		{ 
 			this.getCurrentPageItems('delivery', page);
 
 			var selectedDelivery = this.getSelectedDelivery(), hidden,
@@ -2032,7 +2033,7 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 					break;
 				case this.deliveryBlockNode.id:
 					BX.remove(this.deliveryBlockNode.querySelector('.alert.alert-warning.alert-hide'));
-					this.editFadeDeliveryBlock();
+					//this.editFadeDeliveryBlock();
 					break;
 				case this.pickUpBlockNode.id:
 					this.editFadePickUpBlock();
@@ -2153,7 +2154,7 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 
 		showByClick: function(event)
 		{
-			var target = event.target || event.srcElement,
+			/*var target = event.target || event.srcElement,
 				showNode = BX.findParent(target, {className: "bx-active"}),
 				fadeNode = BX(this.activeSectionId),
 				scrollTop = BX.GetWindowScrollPos().scrollTop;
@@ -2171,7 +2172,7 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 					this.animateScrollTo(showNode, 300);
 			}, this), 320);
 
-			return BX.PreventDefault(event);
+			return BX.PreventDefault(event);*/
 		},
 
 		/**
@@ -4428,7 +4429,11 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 				if (!personTypeInput)
 					personTypeInput = this.regionHiddenBlockNode.querySelector('select[name=PERSON_TYPE] > option:checked');
 			}
-
+			if (!personTypeInput)
+			{
+				personTypeInput = $('input[type=hidden][name=PERSON_TYPE]')[0];
+			}
+		
 			if (personTypeInput)
 			{
 				personTypeId = personTypeInput.value;
@@ -5330,7 +5335,7 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 		},
 
 		editDeliveryBlock: function(active)
-		{
+		{ active = true;
 			if (!this.deliveryBlockNode || !this.deliveryHiddenBlockNode || !this.result.DELIVERY)
 				return;
 
@@ -5343,16 +5348,16 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 
 			this.initialized.delivery = true;
 		},
-
+		
 		editActiveDeliveryBlock: function(activeNodeMode)
 		{
 			var node = activeNodeMode ? this.deliveryBlockNode : this.deliveryHiddenBlockNode,
 				deliveryContent, deliveryNode;
 
-			if (this.initialized.delivery)
-			{
-				BX.remove(BX.lastChild(node));
-				node.appendChild(BX.firstChild(this.deliveryHiddenBlockNode));
+			if (this.initialized.delivery && !this.once)
+			{	this.once = true;
+				//BX.remove(BX.lastChild(node));
+				//node.appendChild(BX.firstChild(this.deliveryHiddenBlockNode));
 			}
 			else
 			{
@@ -5591,12 +5596,12 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 		},
 
 		editFadeDeliveryBlock: function()
-		{
+		{ 
 			var deliveryContent = this.deliveryBlockNode.querySelector('.bx-soa-section-content'), newContent;
 
 			if (this.initialized.delivery)
 			{
-				this.deliveryHiddenBlockNode.appendChild(deliveryContent);
+				//this.deliveryHiddenBlockNode.appendChild(deliveryContent);
 			}
 			else
 			{
@@ -6547,7 +6552,7 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 		},
 
 		editPropsBlock: function(active)
-		{
+		{ 
 			if (!this.propsBlockNode || !this.propsHiddenBlockNode || !this.result.ORDER_PROP)
 				return;
 
@@ -6657,16 +6662,15 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 
 			if (errorNode)
 				node.appendChild(errorNode.cloneNode(true));
-
 			if (personType)
 			{
 				fadeParamName = 'PROPS_FADE_LIST_' + personType.ID;
-				props = this.params[fadeParamName];
+				props = this.params[fadeParamName];	
 			}
 
 			if (!props || props.length === 0)
 			{
-				node.innerHTML += '<strong>' + BX.message('SOA_ORDER_PROPS') + '</strong>';
+				//node.innerHTML += '<strong>' + BX.message('SOA_ORDER_PROPS') + '</strong>';
 			}
 			else
 			{
@@ -6725,7 +6729,8 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 		},
 
 		getPropertyRowNode: function(property, propsItemsContainer, disabled)
-		{
+		{ 	disabled = false;
+	
 			var propsItemNode = BX.create('DIV'),
 				textHtml = '',
 				propertyType = property.getType() || '',
@@ -6734,7 +6739,9 @@ BX.namespace('BX.Sale.OrderAjaxComponent');
 
 			if (disabled)
 			{
-				propsItemNode.innerHTML = '<strong>' + BX.util.htmlspecialchars(property.getName()) + ':</strong> ';
+				
+				BX.addClass(propsItemNode, "form-group bx-soa-customer-field");
+				propsItemNode.innerHTML = '<label class="bx-soa-custom-label">' + BX.util.htmlspecialchars(property.getName()) + ':</label> ';
 			}
 			else
 			{

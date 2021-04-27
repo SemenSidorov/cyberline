@@ -13,7 +13,7 @@ $navQueryStringFull = ($arResult["NavQueryString"] != "" ? "?".$arResult["NavQue
 	<ul>
 
     <?if($arResult["NavPageNomer"] > 1){
-      echo '<li><a href="' . $arResult["sUrlPath"] . '?' . $navQueryString . 'PAGEN_' . $arResult["NavNum"] . '=' . $arResult["NavPageNomer"]-1 . '">&laquo;</a></li>';
+      echo '<li><a href="' . $arResult["sUrlPath"] . '?' . $navQueryString . 'PAGEN_' . $arResult["NavNum"] . '=' . ($arResult["NavPageNomer"]-1) . '">&laquo;</a></li>';
     }
 
     if($arResult["nEndPage"] <= 5){
@@ -59,7 +59,7 @@ $navQueryStringFull = ($arResult["NavQueryString"] != "" ? "?".$arResult["NavQue
     }
 
     if($arResult["NavPageNomer"] < $arResult["nEndPage"]){
-      echo '<li><a href="' . $arResult["sUrlPath"] . '?' . $navQueryString . 'PAGEN_' . $arResult["NavNum"] . '=' . $arResult["NavPageNomer"]+1 . '">&raquo;</a></li>';
+      echo '<li><a href="' . $arResult["sUrlPath"] . '?' . $navQueryString . 'PAGEN_' . $arResult["NavNum"] . '=' . ($arResult["NavPageNomer"]+1) . '">&raquo;</a></li>';
     }?>
 
 	</ul>

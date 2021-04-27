@@ -57,7 +57,7 @@ $APPLICATION->SetTitle("Каталог");
 		"DETAIL_SHOW_POPULAR" => "N",
 		"DETAIL_SHOW_SLIDER" => "N",
 		"DETAIL_SHOW_VIEWED" => "N",
-		"DETAIL_STRICT_SECTION_CHECK" => "N",
+		"DETAIL_STRICT_SECTION_CHECK" => "Y",
 		"DETAIL_USE_COMMENTS" => "N",
 		"DETAIL_USE_VOTE_RATING" => "N",
 		"DISABLE_INIT_JS_IN_COMPONENT" => "N",
@@ -227,10 +227,10 @@ $APPLICATION->SetTitle("Каталог");
 		"COMPONENT_TEMPLATE" => "kiberline",
 		"SEF_URL_TEMPLATES" => array(
 			"sections" => "",
-			"section" => "#SECTION_CODE#/",
-			"element" => "#SECTION_CODE#/#ELEMENT_CODE#/",
+			"section" => "#SECTION_CODE_PATH#/",
+			"element" => "#SECTION_CODE_PATH#/#ELEMENT_CODE#/",
 			"compare" => "compare.php?action=#ACTION_CODE#",
-			"smart_filter" => "#SECTION_CODE#/filter/#SMART_FILTER_PATH#/apply/",
+			"smart_filter" => "#SECTION_CODE_PATH#/filter/#SMART_FILTER_PATH#/apply/",
 		),
 		"VARIABLE_ALIASES" => array(
 			"compare" => array(

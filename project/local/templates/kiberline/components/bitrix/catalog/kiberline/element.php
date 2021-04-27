@@ -384,7 +384,7 @@ $isSidebar = ($arParams['SIDEBAR_DETAIL_SHOW'] == 'Y' && !empty($arParams['SIDEB
 									'SET_META_KEYWORDS' => 'N',
 									'SET_META_DESCRIPTION' => 'N',
 									'SET_LAST_MODIFIED' => 'N',
-									'ADD_SECTIONS_CHAIN' => 'N',
+									'ADD_SECTIONS_CHAIN' => 'Y',
 
 									'HIDE_BLOCK_TITLE' => 'Y',
 									'SHOW_NAME' => 'Y',
@@ -478,7 +478,7 @@ $isSidebar = ($arParams['SIDEBAR_DETAIL_SHOW'] == 'Y' && !empty($arParams['SIDEB
 									"SET_META_KEYWORDS" => "N",
 									"SET_META_DESCRIPTION" => "N",
 									"SET_LAST_MODIFIED" => "N",
-									"ADD_SECTIONS_CHAIN" => "N",
+									"ADD_SECTIONS_CHAIN" => "Y",
 
 									'PRICE_VAT_INCLUDE' => $arParams['PRICE_VAT_INCLUDE'],
 									'USE_PRODUCT_QUANTITY' => $arParams['USE_PRODUCT_QUANTITY'],
@@ -610,7 +610,7 @@ $isSidebar = ($arParams['SIDEBAR_DETAIL_SHOW'] == 'Y' && !empty($arParams['SIDEB
 									"SET_META_KEYWORDS" => "N",
 									"SET_META_DESCRIPTION" => "N",
 									"SET_LAST_MODIFIED" => "N",
-									"ADD_SECTIONS_CHAIN" => "N",
+									"ADD_SECTIONS_CHAIN" => "Y",
 
 									'PRICE_VAT_INCLUDE' => $arParams['PRICE_VAT_INCLUDE'],
 									'USE_PRODUCT_QUANTITY' => $arParams['USE_PRODUCT_QUANTITY'],

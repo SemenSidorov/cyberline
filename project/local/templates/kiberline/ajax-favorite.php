@@ -48,15 +48,17 @@ if($_POST["id_favorite"] or $_POST["id_favorites"]){
       $data = $data->Fetch();
       $data = json_decode($data["UF_FAVORITES"]);
       $bool = false;
+      $new_data = [];
       foreach ($data as $key => $value) {
-        if($_POST["id_favorite"] == $value){
-          unset($data[$key]);
+        if($_POST["id_favorite"] !== $value){
+          $new_data[] = $value;
+        }else{
           $bool = true;
         }
       }
       if($bool){
         $arFields = array(
-            'UF_FAVORITES' => json_encode($data)
+            'UF_FAVORITES' => json_encode($new_data)
         );
         $USER->Update($user_id, $arFields);
       }
@@ -65,14 +67,16 @@ if($_POST["id_favorite"] or $_POST["id_favorites"]){
     }else{
       $data = json_decode($_COOKIE["UF_FAVORITES"]);
       $bool = false;
+      $new_data = [];
       foreach ($data as $key => $value) {
-        if($_POST["id_favorite"] == $value){
-          unset($data[$key]);
+        if($_POST["id_favorite"] !== $value){
+          $new_data[] = $value;
+        }else{
           $bool = true;
         }
       }
       if($bool){
-        echo json_encode(["set" => $data]);
+        echo json_encode(["set" => $new_data]);
       }else{
         echo "success";
       }

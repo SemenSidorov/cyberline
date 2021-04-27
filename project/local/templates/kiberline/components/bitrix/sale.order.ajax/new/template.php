@@ -336,9 +336,12 @@ else
 		<input type="hidden" name="<?=$arParams['ACTION_VARIABLE']?>" value="saveOrderAjax">
 		<input type="hidden" name="location_type" value="code">
 		<input type="hidden" name="BUYER_STORE" id="BUYER_STORE" value="<?=$arResult['BUYER_STORE']?>">
+		<?if ($USER->IsAuthorized()):?>
+			<input type="hidden" name="PERSON_TYPE" value="<?=$USER->GetID()?>">
+		<?endif;?>
 		<div id="bx-soa-order" class="row bx-<?=$arParams['TEMPLATE_THEME']?>" style="opacity: 0">
 			<!--	MAIN BLOCK	-->
-			<div class="col-sm-9 bx-soa">
+			<div class="col-lg-8 col-sm-6 bx-soa">
 				<div id="bx-soa-main-notifications">
 					<div class="alert alert-danger" style="display:none"></div>
 					<div data-type="informer" style="display:none"></div>
@@ -349,6 +352,17 @@ else
 						<h2 class="bx-soa-section-title col-sm-9">
 							<span class="bx-soa-section-title-count"></span><?=$arParams['MESS_AUTH_BLOCK_NAME']?>
 						</h2>
+					</div>
+					<div class="bx-soa-section-content container-fluid"></div>
+				</div>
+				
+				<!--	BUYER PROPS BLOCK	-->
+				<div id="bx-soa-properties" data-visited="false" class="bx-soa-section bx-active">
+					<div class="bx-soa-section-title-container">
+						<h2 class="bx-soa-section-title col-sm-9">
+							<span class="bx-soa-section-title-count"></span>. <?=$arParams['MESS_BUYER_BLOCK_NAME']?>
+						</h2>
+						<? /*<div class="col-xs-12 col-sm-3 text-right"><a href="" class="bx-soa-editstep"><?=$arParams['MESS_EDIT']?></a></div> */?>
 					</div>
 					<div class="bx-soa-section-content container-fluid"></div>
 				</div>
@@ -391,7 +405,7 @@ else
 						</div>
 						<div class="bx-soa-section-content container-fluid"></div>
 					</div>
-					<!--	DELIVERY BLOCK	-->
+					<!--	DELIVERY BLOCK	1-->
 					<div id="bx-soa-delivery" data-visited="false" class="bx-soa-section bx-active" <?=($hideDelivery ? 'style="display:none"' : '')?>>
 						<div class="bx-soa-section-title-container">
 							<h2 class="bx-soa-section-title col-sm-9">
@@ -412,11 +426,11 @@ else
 						<div class="bx-soa-section-content container-fluid"></div>
 					</div>
 				<? else: ?>
-					<!--	DELIVERY BLOCK	-->
-					<div id="bx-soa-delivery" data-visited="false" class="bx-soa-section bx-active" <?=($hideDelivery ? 'style="display:none"' : '')?>>
+					<!--	DELIVERY BLOCK	2-->
+					<div id="bx-soa-delivery" data-visited="true" class="bx-soa-section bx-active" <?=($hideDelivery ? 'style="display:none"' : '')?>>
 						<div class="bx-soa-section-title-container">
 							<h2 class="bx-soa-section-title col-sm-9">
-								<span class="bx-soa-section-title-count"></span><?=$arParams['MESS_DELIVERY_BLOCK_NAME']?>
+								<span class="bx-soa-section-title-count"></span>. <?=$arParams['MESS_DELIVERY_BLOCK_NAME']?>
 							</h2>
 							<div class="col-xs-12 col-sm-3 text-right"><a href="" class="bx-soa-editstep"><?=$arParams['MESS_EDIT']?></a></div>
 						</div>
@@ -433,31 +447,20 @@ else
 						<div class="bx-soa-section-content container-fluid"></div>
 					</div>
 					<!--	PAY SYSTEMS BLOCK	-->
-					<div id="bx-soa-paysystem" data-visited="false" class="bx-soa-section bx-active">
+					<div id="bx-soa-paysystem" data-visited="true" class="bx-soa-section bx-active bx-selected">
 						<div class="bx-soa-section-title-container">
 							<h2 class="bx-soa-section-title col-sm-9">
-								<span class="bx-soa-section-title-count"></span><?=$arParams['MESS_PAYMENT_BLOCK_NAME']?>
+								<span class="bx-soa-section-title-count"></span>. <?=$arParams['MESS_PAYMENT_BLOCK_NAME']?>
 							</h2>
 							<div class="col-xs-12 col-sm-3 text-right"><a href="" class="bx-soa-editstep"><?=$arParams['MESS_EDIT']?></a></div>
 						</div>
 						<div class="bx-soa-section-content container-fluid"></div>
 					</div>
 				<? endif ?>
-				<!--	BUYER PROPS BLOCK	-->
-				<div id="bx-soa-properties" data-visited="false" class="bx-soa-section bx-active">
-					<div class="bx-soa-section-title-container">
-						<h2 class="bx-soa-section-title col-sm-9">
-							<span class="bx-soa-section-title-count"></span><?=$arParams['MESS_BUYER_BLOCK_NAME']?>
-						</h2>
-						<div class="col-xs-12 col-sm-3 text-right"><a href="" class="bx-soa-editstep"><?=$arParams['MESS_EDIT']?></a></div>
-					</div>
-					<div class="bx-soa-section-content container-fluid"></div>
-				</div>
-
 
 
 				<!--	ORDER SAVE BLOCK	-->
-				<div id="bx-soa-orderSave">
+				<div id="bx-soa-orderSave" style="display: block;">
 					<div class="checkbox">
 						<?
 						if ($arParams['USER_CONSENT'] === 'Y')
@@ -497,15 +500,18 @@ else
 					</div>
 				</div>
 			</div>
+			
+			<div class="col-lg-1">
+			</div>
 
 			<!--	SIDEBAR BLOCK	-->
-			<div id="bx-soa-total" class="col-sm-3 bx-soa-sidebar order-pg-right">
+			<div id="bx-soa-total" class="col-lg-3 col-sm-6 bx-soa-sidebar order-pg-right">
 				<div class="bx-soa-cart-total-ghost"></div>
 				<? if ($arParams['BASKET_POSITION'] === 'after'): ?>
 					<!--	BASKET ITEMS BLOCK KEK	-->
 					<div id="bx-soa-basket" data-visited="false" class="bx-soa-section bx-active">
 						<div class="bx-soa-section-title-container">
-							<h2 class="bx-soa-section-title col-sm-9">
+							<h2 class="bx-soa-section-title">
 								<span class="bx-soa-section-title-count"></span><?=$arParams['MESS_BASKET_BLOCK_NAME']?>
 							</h2>
 							<div class="col-xs-12 col-sm-3 text-right"><a href="javascript:void(0)" class="bx-soa-editstep"><?=$arParams['MESS_EDIT']?></a></div>

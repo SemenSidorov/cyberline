@@ -19,8 +19,8 @@
 					<img src="<?=SITE_TEMPLATE_PATH?>/img/sunrise.png">
 				</div>
 				<div class="dev">
-					Разработка корпоративного сайта <br/>
-					<a href="#">интернет-агентство BREVIS</a>
+					Разработка интернет-магазина <br/>
+					<a href="https://www.brevis-site.ru/" target="_blank">интернет-агентство BREVIS</a>
 				</div>
 			</div>
 			<div class="line"></div>
@@ -132,17 +132,28 @@
 			<?$APPLICATION->IncludeComponent(
 				"bitrix:main.register",
 				"new",
-				Array(
+				array(
 					"AUTH" => "Y",
-					"COMPONENT_TEMPLATE" => "templates",
-					"REQUIRED_FIELDS" => array(0=>"EMAIL",1=>"NAME",),
+					"COMPONENT_TEMPLATE" => "new",
+					"REQUIRED_FIELDS" => array(
+						0 => "EMAIL",
+						1 => "NAME",
+						2 => "PERSONAL_PHONE",
+					),
 					"SET_TITLE" => "N",
-					"SHOW_FIELDS" => array(0=>"EMAIL",1=>"NAME",),
+					"SHOW_FIELDS" => array(
+						0 => "EMAIL",
+						1 => "NAME",
+						2 => "PERSONAL_PHONE",
+					),
 					"SUCCESS_PAGE" => "",
-					"USER_PROPERTY" => array(),
+					"USER_PROPERTY" => array(
+					),
 					"USER_PROPERTY_NAME" => "",
-					"USE_BACKURL" => "N"
-				)
+					"USE_BACKURL" => "N",
+					"AJAX_MODE" => "Y"
+				),
+				false
 			);?>
 			</div>
 			<div class="content c2">
@@ -153,7 +164,8 @@
 						"FORGOT_PASSWORD_URL" => "/personal/forget.php",
 						"PROFILE_URL" => "",
 						"REGISTER_URL" => "",
-						"SHOW_ERRORS" => "N"
+						"SHOW_ERRORS" => "N",
+						"AJAX_MODE" => "Y"
 					)
 				);?>
 			</div>

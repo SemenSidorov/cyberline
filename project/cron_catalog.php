@@ -1,7 +1,26 @@
 <?
+function GetChildSections($section_id = 0, $percent = 0){
+  if($section_id == 0) return false;
+  $rsParentSection = CIBlockSection::GetByID($section_id);
+  if ($arParentSection = $rsParentSection->GetNext())
+  {
+    $ar_ex_ids = [];
+    $arFilter = array('IBLOCK_ID' => 6,'>LEFT_MARGIN' => $arParentSection['LEFT_MARGIN'],'<RIGHT_MARGIN' => $arParentSection['RIGHT_MARGIN'],'>DEPTH_LEVEL' => $arParentSection['DEPTH_LEVEL']); // выберет потомков без учета активности
+    $rsSect = CIBlockSection::GetList(array('left_margin' => 'asc'),$arFilter);
+    while ($arSect = $rsSect->GetNext())
+    {
+      $ar_ex_ids[$arSect["ID"]] = $percent;
+       // $ar_extra_charge[$key]["IDs"][] = $arSect["ID"];
+    }
+    $ar_ex_ids[$section_id] = $percent;
+    // $ar_extra_charge[$key]["IDs"][] = $parentSect["ID"];
+    return $ar_ex_ids;
+  }
+  return false;
+}
 ini_set('memory_limit', '990M');
 $start = microtime(true);
-$_SERVER['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT']?$_SERVER['DOCUMENT_ROOT']:"/home/h907190572/kiberline.brevis.pro/docs";
+$_SERVER['DOCUMENT_ROOT'] = $_SERVER['DOCUMENT_ROOT']?$_SERVER['DOCUMENT_ROOT']:"/home/h907190572/cyberline.store/docs";
 require_once ($_SERVER['DOCUMENT_ROOT']."/bitrix/modules/main/include.php");
 require_once ($_SERVER['DOCUMENT_ROOT']."/include/pclzip.lib.php");
 CModule::IncludeModule("iblock");
@@ -10,14 +29,31 @@ $bs = new CIBlockSection;
 $el = new CIBlockElement;
 
 $file = file_get_contents('http://www.netlab.ru/products/pricexml4.zip');
-file_put_contents('/home/h907190572/kiberline.brevis.pro/docs/include/catalog_update/Price.zip', $file);
+file_put_contents('/home/h907190572/cyberline.store/docs/include/catalog_update/Price.zip', $file);
 
 $zip = new ZipArchive;
-if($zip->open('/home/h907190572/kiberline.brevis.pro/docs/include/catalog_update/Price.zip')){
-  $zip->extractTo('/home/h907190572/kiberline.brevis.pro/docs/include/catalog_update/');
+if($zip->open('/home/h907190572/cyberline.store/docs/include/catalog_update/Price.zip')){
+  $zip->extractTo('/home/h907190572/cyberline.store/docs/include/catalog_update/');
   $zip->close();
 }else{
   die;
+}
+
+require_once ($_SERVER['DOCUMENT_ROOT']."/price_config.php");
+$price_percent_sect = [];
+foreach ($ar_extra_charge as $parentSect) {
+  $res = GetChildSections($parentSect["ID"], $parentSect["PERCENT"]);
+  foreach ($res as $key => $value) {
+    $price_percent_sect[$key] = $value;
+  }
+  if(count($parentSect["EXCEPTION_IDs"])){
+    foreach ($parentSect["EXCEPTION_IDs"] as $except) {
+      $res = GetChildSections($except["ID"], $except["PERCENT"]);
+      foreach ($res as $key => $value) {
+        $price_percent_sect[$key] = $value;
+      }
+    }
+  }
 }
 
 $rate = new XMLReader();
@@ -72,7 +108,7 @@ while($price = $prices->Fetch())
 }
 
 $reader = new XMLReader();
-$reader->open('/home/h907190572/kiberline.brevis.pro/docs/include/catalog_update/Price.xml');
+$reader->open('/home/h907190572/cyberline.store/docs/include/catalog_update/Price.xml');
 while($reader->read()) {
   if($reader->nodeType == XMLReader::ELEMENT) {
 
@@ -132,6 +168,15 @@ while($reader->read()) {
       if(isset($elemt_arr[$id]) && !empty($elemt_arr[$id])){
         while($reader->read()) {
 
+          if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'categoryId') {
+            $reader->read();
+            if(isset($sections_arr[$reader->value]) && !empty($sections_arr[$reader->value])){
+              $parentId = $sections_arr[$reader->value];
+            }else{
+              $parentId = 0;
+            }
+          }
+
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'priceE') {
             $reader->read();
             $price = $reader->value;
@@ -161,12 +206,27 @@ while($reader->read()) {
         if($currency !== "RUB"){
           $price = $rate_value[$currency]["Value"] * $price / $rate_value[$currency]["Nominal"];
         }
-        if((string)$products_arr[$elemt_arr[$id]]["QUANTITY"] != (string)$count+$remote or (string)$products_arr[$elemt_arr[$id]]["QUANTITY_RESERVED"] != (string)$count+$remote){
+        if((int)$products_arr[$elemt_arr[$id]]["QUANTITY"] != (int)$count+$remote or (int)$products_arr[$elemt_arr[$id]]["QUANTITY_RESERVED"] != (int)$count+$remote){
           CCatalogProduct::Update($elemt_arr[$id], ["QUANTITY" => $count+$remote, "QUANTITY_RESERVED" => $count+$remote]);
         }
 
-        if((string)$products_arr[$elemt_arr[$id]]["PRICE"] != (string)$price){
+        if($price_percent_sect[$parentId]){
+          $products_arr[$elemt_arr[$id]]["PRICE"] = $products_arr[$elemt_arr[$id]]["PRICE"] + $products_arr[$elemt_arr[$id]]["PRICE"]/100*$price_percent_sect[$parentId];
+        }
+        if($price_percent_sect[$parentId]){
+          $price[$elemt_arr[$id]] = $price + $price/100*$price_percent_sect[$parentId];
+        }
+        if(fmod($products_arr[$elemt_arr[$id]]["PRICE"], 1)){
+          $products_arr[$elemt_arr[$id]]["PRICE"] = $products_arr[$elemt_arr[$id]]["PRICE"] - fmod($products_arr[$elemt_arr[$id]]["PRICE"], 1) + 1;
+        }
+        if(fmod($price, 1)){
+          $price = $price - fmod($price, 1) + 1;
+        }
+        if((int)$products_arr[$elemt_arr[$id]]["PRICE"] != (int)$price){
           CPrice::Update($products_arr[$elemt_arr[$id]]["PRICE_ID"], ["PRICE" => $price], false);
+        }
+        if($price < 30){
+          $el->Update($elemt_arr[$id], ["ACTIVE" => "N"]);
         }
       }else{
         $data = Array(
@@ -189,14 +249,23 @@ while($reader->read()) {
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'categoryId') {
             $reader->read();
             if(isset($sections_arr[$reader->value]) && !empty($sections_arr[$reader->value])){
+              $parentId = $sections_arr[$reader->value];
               $data["IBLOCK_SECTION_ID"] = $sections_arr[$reader->value];
             }else{
+              $parentId = 0;
               $parentIdNo = true;
             }
           }
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'picture') {
             $reader->read();
-            $PIC = CFile::MakeFileArray($reader->value);
+            $url = array_reverse(explode("&", str_replace("amp;", "&", $reader->value)));
+            $url[0] = 100154252;
+            $str_url = '';
+            foreach (array_reverse($url) as $value) {
+              $str_url .= $value."&";
+            }
+            $str_url = substr($str_url, 0, -1);
+            $PIC = CFile::MakeFileArray($str_url);
             $PIC['name'] = str_replace([".dll", ".asp"], ".jpg", $PIC['name']);
             $PIC['type'] = "image/jpeg";
             $data["DETAIL_PICTURE"] = $PIC;
@@ -229,11 +298,11 @@ while($reader->read()) {
           }
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'Vendor') {
             $reader->read();
-            $PROP["VENDOR"] = $reader->value;
+            $PROP["VENDOR"] = strtoupper(substr(trim($reader->value), 0, 1)) . mb_strtolower(substr(trim($reader->value), 1));
           }
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'LastCountry') {
             $reader->read();
-            $PROP["COUNTRY"] = $reader->value;
+            $PROP["COUNTRY"] = strtoupper(substr(trim($reader->value), 0, 1)) . mb_strtolower(substr(trim($reader->value), 1));
           }
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'LastGTD') {
             $reader->read();
@@ -241,7 +310,7 @@ while($reader->read()) {
           }
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'Colour') {
             $reader->read();
-            $PROP["COLOR"] = $reader->value;
+            $PROP["COLOR"] = strtoupper(substr(trim($reader->value), 0, 1)) . mb_strtolower(substr(trim($reader->value), 1));
           }
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'Certificate') {
             $reader->read();
@@ -259,7 +328,14 @@ while($reader->read()) {
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'picture2') {
             $reader->read();
             if(isset($reader->value) && !empty($reader->value)){
-              $PIC = CFile::MakeFileArray($reader->value);
+              $url = array_reverse(explode("&", str_replace("amp;", "&", $reader->value)));
+              $url[0] = 100154252;
+              $str_url = '';
+              foreach (array_reverse($url) as $value) {
+                $str_url .= $value."&";
+              }
+              $str_url = substr($str_url, 0, -1);
+              $PIC = CFile::MakeFileArray($str_url);
               $PIC['name'] = str_replace([".dll", ".asp"], ".jpg", $PIC['name']);
               $PIC['type'] = "image/jpeg";
               $PROP["ADD_PICTURES"][] = $PIC;
@@ -268,7 +344,14 @@ while($reader->read()) {
           if($reader->nodeType == XMLReader::ELEMENT && $reader->localName == 'picture3') {
             $reader->read();
             if(isset($reader->value) && !empty($reader->value)){
-              $PIC = CFile::MakeFileArray($reader->value);
+              $url = array_reverse(explode("&", str_replace("amp;", "&", $reader->value)));
+              $url[0] = 100154252;
+              $str_url = '';
+              foreach (array_reverse($url) as $value) {
+                $str_url .= $value."&";
+              }
+              $str_url = substr($str_url, 0, -1);
+              $PIC = CFile::MakeFileArray($str_url);
               $PIC['name'] = str_replace([".dll", ".asp"], ".jpg", $PIC['name']);
               $PIC['type'] = "image/jpeg";
               $PROP["ADD_PICTURES"][] = $PIC;
@@ -302,6 +385,15 @@ while($reader->read()) {
         $data["PROPERTY_VALUES"] = $PROP;
         if($currency !== "RUB"){
           $price = $rate_value[$currency]["Value"] * $price / $rate_value[$currency]["Nominal"];
+        }
+        if($price_percent_sect[$parentId]){
+          $price[$elemt_arr[$id]] = $price + $price/100*$price_percent_sect[$parentId];
+        }
+        if(fmod($price, 1)){
+          $price = $price - fmod($price, 1) + 1;
+        }
+        if($price < 30){
+          $data["ACTIVE"] = "N";
         }
         if($PRODUCT_ID = $el->Add($data)){
           $arFields = [

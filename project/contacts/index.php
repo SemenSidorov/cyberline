@@ -1,22 +1,71 @@
 <?
 require($_SERVER["DOCUMENT_ROOT"]."/bitrix/header.php");
-$APPLICATION->SetTitle("Обратная связь"); ?>
-
-<div class="wrap">
-    <div class="contacts_glav">
-        <div class="contacts_block">
-			<img src="/local/templates/kiberline/img/adres_contacts.png" />
-            <p>г. Тула, ул. пр-т Ленина, д. 77, цокольный этаж (Центр Бизнеса и торговли, вход со стороны двора)</p>
-        </div>
-        <div class="contacts_block">
-            <img src="/local/templates/kiberline/img/phone_contacts.png" />
-            <p><a itemprop="telephone" href="tel:+74872710505">+7 (4872) 71-05-05</a></p>
-        </div>
-<p class="scheme_map_contacts">Схема проезда</p>
-<script type="text/javascript" charset="utf-8" async src="https://api-maps.yandex.ru/services/constructor/1.0/js/?um=constructor%3Aee38503a29a885ee3421abb654729c70e08ecff03dc4d22fe733c3e33116d692&amp;width=100%25&amp;height=400&amp;lang=ru_RU&amp;scroll=true"></script>
-    </div>
-
-
+$APPLICATION->SetTitle("Обратная связь"); ?><div class="wrap">
+	<div class="glav_contacts">
+		<div class="contacts_block">
+			<div>
+ <img src="/local/templates/kiberline/img/contatcs_point.png" alt="">
+			</div>
+			<div>
+ <span class="contacts_block_span">Адрес:</span><br>
+				 г. Тула, ул. пр-т Ленина, д. 77,<br>
+				 цокольный этаж (Центр бизнеса и торговли, вход со стороны двора)
+			</div>
+		</div>
+		<div class="contacts_block">
+			<div>
+ <img src="/local/templates/kiberline/img/contacts_phone.png" alt="">
+			</div>
+			<div>
+ <span class="contacts_block_span">Телефон:</span><br>
+ <a itemprop="telephone" href="tel:+74872710505">+7 (4872) 71-05-05</a>
+			</div>
+		</div>
+		<div class="contacts_block">
+			<div>
+ <img src="/local/templates/kiberline/img/contacts_email.png" alt="">
+			</div>
+			<div>
+ <span class="contacts_block_span">E-mail:</span><br>
+ <a href="mailto:info@kiberline.ru">info@kiberline.ru </a>
+			</div>
+		</div>
+		<div class="contacts_block">
+			<div>
+ <img src="/local/templates/kiberline/img/contacts_clock.png" alt="">
+			</div>
+			<div>
+				 Режим работы: <br>
+				 Пн-Сб с 10.00 до 19.00<br>
+				 Вс с 10.00 до 17.00
+			</div>
+		</div>
+	</div>
 </div>
-
-<?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
+<p class="scheme_map_contacts">
+	 Схема проезда
+</p>
+<div class="slide_pages-map" style="width: auto; height: 400px" id="slide_pages-map">
+</div>
+      	<script src="https://api-maps.yandex.ru/2.1/?lang=ru_RU&amp;apikey=89467f71-02c1-496d-ad22-a859427c30ea" type="text/javascript"></script>
+        <script>
+          ymaps.ready(function () {
+        	var myMap = new ymaps.Map('slide_pages-map', {
+        			center: [54.179893, 37.603891],
+        			zoom: 16
+        		});
+      		var myPlacemark = new ymaps.Placemark([54.179893, 37.603891], {
+      				balloonContentHeader: "Киберлайн",
+              hintContent: 'г. Тула, ул. пр-т Ленина, д. 77',
+balloonContentBody: "<p>г. Тула, ул. пр-т Ленина, д. 77</p>"
+      				
+      			}, {
+      				iconLayout: 'default#image',
+      				iconImageHref: '<?=SITE_TEMPLATE_PATH?>/img/been-here-marker.png',
+      				iconImageSize: [50, 56],
+      				iconImageOffset: [-5, -38],
+              preset: 'islands#blueDotIconWithCaption'
+            });
+      			myMap.geoObjects.add(myPlacemark);
+          });
+        </script><?require($_SERVER["DOCUMENT_ROOT"]."/bitrix/footer.php");?>
